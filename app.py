@@ -15,56 +15,53 @@ def select_post():
     for row in rows:
         print(row[1])
 
-def game_check():
+def exit_check():
     check = input("would you like to continue? Y/N: ")
-    if check == "Y":
+    if check == "N":
         return True
-    elif check == "N":
+    elif check == "Y":
         return False
 
-def check_login(username):
+
+def login_check(username, password):
     cursor.execute("SELECT * FROM users")
     user_rows = cursor.fetchall()
     conn.commit()
-    print(user_rows)
+    # print(user_rows)
     for user_row in user_rows:
-        print(user_row[0])
-        if username == user_row[0]:
+        # print(user_row[0])
+        if username == user_row[0] and password == user_row[1]:
             return True
-        else:
-            return False
-            
+    return False         
 
 print("Welcome to the blog site.")
-username = input("Please input your username: ")
-password = input("Please input your password: ")
-
-login_verify = check_login(username)
-if login_verify == True:
-    print("Hi " + username + ", please select from the following options: ")
-    print("1: Write a new post")
-    print("2: See all other posts")
-    userSelection = input()
-
-    while True:
-        if userSelection == "1":
-            content = input("Please write a new post: ")
-            insert_post(username, content)
-            check_continue = game_check()
-            if check_continue == False:
-                print("Goodbye!")
-                break
-        elif userSelection == "2":
-            select_post()
-            check_continue = game_check()
-            if check_continue == False:
-                print("Goodbye!")
-                break
-        else:
-            print("You have invalid selection, please select again.")
-            break
-elif login_verify == False:
-    print("Sorry, you haven't registered yet!")
+while True:
+    print("Have you registered? Y/N")
+    registration = input()
+    if registration == "N":
+        pass
+    elif registration == "Y":
+        username = input("Please input your username: ")
+        password = input("Please input your password: ")
+        if login_check(username, password):
+            while True: 
+                print("Hi " + username + ", please select from the following options: ")
+                print("1: Write a new post")
+                print("2: See all other posts")
+                userSelection = input()
+                if userSelection == "1":
+                    content = input("Please write a new post: ")
+                    insert_post(username, content)
+                elif userSelection == "2":
+                    select_post()
+                else:
+                    print("You have invalid selection, please select again.")
+                if exit_check():
+                    print("Goodbye!")
+                    break
+            break     
+        else: 
+            print("Sorry, your password is not correct, please try it again.")
 
 cursor.close()
 conn.close()
