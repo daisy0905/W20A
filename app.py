@@ -16,10 +16,10 @@ def select_post():
         print(row[1])
 
 def exit_check():
-    check = input("would you like to continue? Y/N: ")
-    if check == "N":
+    check = input("would you like to continue? y/n: ")
+    if check == "n":
         return True
-    elif check == "Y":
+    elif check == "y":
         return False
 
 
@@ -32,15 +32,21 @@ def login_check(username, password):
         # print(user_row[0])
         if username == user_row[0] and password == user_row[1]:
             return True
-    return False         
+    return False
+
+def insert_user(username, password):
+    cursor.execute("INSERT INTO users(username, password, id) VALUES(?, ?, NULL)", [username, password])
+    conn.commit()
 
 print("Welcome to the blog site.")
 while True:
-    print("Have you registered? Y/N")
+    print("Have you registered? y/n")
     registration = input()
-    if registration == "N":
-        pass
-    elif registration == "Y":
+    if registration == "n":
+        username = input("Please input your username: ")
+        password = input("Please input your password: ")
+        insert_user(username, password)
+    elif registration == "y":
         username = input("Please input your username: ")
         password = input("Please input your password: ")
         if login_check(username, password):
@@ -61,7 +67,7 @@ while True:
                     break
             break     
         else: 
-            print("Sorry, your password is not correct, please try it again.")
+            print("Sorry, your username/password is not correct, please try it again.")
 
 cursor.close()
 conn.close()
